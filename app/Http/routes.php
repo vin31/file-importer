@@ -12,8 +12,17 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    //return view('welcome');
+    phpinfo();
 });
+
+Route::get('/summary', 'ImportController@summary');
+
+Route::get('/main', 'UrlController@getUrls');
+
+Route::get('/blob', 'ImportController@blobbify');
+
+Route::get('/csv', 'ImportController@compareCsvFiles');
 
 /*
 |--------------------------------------------------------------------------
