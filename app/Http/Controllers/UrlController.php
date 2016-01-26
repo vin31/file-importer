@@ -65,7 +65,6 @@ class UrlController extends Controller
     
     public function isUrlExists($url){
     	$urls = DB::select('SELECT '.SELF::IMPORT_URL_COL.' FROM file.file_importer WHERE '.SELF::IMPORT_URL_COL.' = ?', [$url]);
-    	//return array of urls ($urls). for now, echo out import urls just to check.
     	return count($urls) > 0;
     }
     
