@@ -16,10 +16,10 @@
 		<tbody>
 			@foreach($records as $key=>$record)
 			<tr>
-				<td>Name here</td>
-				<td>{{$record['url']}}</td>
-				<td>{{$record['date']}}</td>
-				<td>{{$record['date']}}</td>
+				<td>{{$record->file_name}}</td>
+				<td>{{$record->import_url}}</td>
+				<td>{{$record->date_added}}</td>
+				<td>{{$record->date_updated}}</td>
 				<td><a href="#">View</a></td>
 			</tr>
 			@endforeach

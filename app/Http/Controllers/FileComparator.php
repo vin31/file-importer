@@ -34,10 +34,15 @@ trait FileComparator
 		}
 	}
 	
-	public function comparePdfFiles() {
+	public function comparePdfFiles($blob1, $blob2) {
 		 
-		$file = file_get_contents("pdf-sample.pdf");
-		$file2 = file_get_contents("pdf-sample2.pdf");
+		info('Comparing PDF files.....');
+		
+		file_put_contents('file1.pdf', $blob1);
+		file_put_contents('file2.pdf', $blob2);
+		
+		$file = file_get_contents("file1.pdf");
+		$file2 = file_get_contents("file2.pdf");
 	
 		$string_array = str_split($file);
 		$string_array2 = str_split($file2);
@@ -53,17 +58,20 @@ trait FileComparator
 		}
 	
 		if ($byteArr === $byteArr2) {
-			echo "true!";
+			return true;
 		} else {
-			echo "false!";
+			return false;
 		}
-	
-		return view('main');
 	}
 	
 	public function isCsvFile($url) 
 	{
 		return strcasecmp(pathinfo($url, PATHINFO_EXTENSION), 'csv') === 0;
+	}
+	
+	public function isPdfFile($url)
+	{
+		return strcasecmp(pathinfo($url, PATHINFO_EXTENSION), 'pdf') === 0;
 	}
 	
 	public function getFileName($url)

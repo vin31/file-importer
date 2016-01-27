@@ -43,21 +43,26 @@ class UrlController extends Controller
 			
 			if ($this->isUrlExists($import_url))
 			{
-				
 				if ($this->isCsvFile($import_url))
 				{
 					if ($this->compareCsvFiles($blob1,  $this->getBlobOfFile($import_url)) === false)
 					{
 						$affected = DB::update('UPDATE file.file_importer SET '.SELF::IMG_DATA_COL.' = ?, '.SELF::DATE_UPDATED_COL. ' = ? WHERE '. SELF::IMPORT_URL_COL .' = ?', [$blob1, Carbon\Carbon::now(), $import_url]);
 						info('? File/s updated', [$affected]);
+					} 
+				}
+				else if ($this->isPdfFile($import_url)) 
+				{
+					if ($this->comparePdfFiles($blob1,  $this->getBlobOfFile($import_url)) === false)
+					{
+						$affected = DB::update('UPDATE file.file_importer SET '.SELF::IMG_DATA_COL.' = ?, '.SELF::DATE_UPDATED_COL. ' = ? WHERE '. SELF::IMPORT_URL_COL .' = ?', [$blob1, Carbon\Carbon::now(), $import_url]);
+						info('? File/s updated', [$affected]);
 					}
 				}
-				
 			} else 
 			{
 				$this->insertFile($blob1, $import_url);
 			}
-// 			fclose($blob1);
 		}
 	}
 	
