@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('inspire')
                  ->hourly();
-		$schedule->command('update.file')
+		$schedule->command('updateFile')
 			->everyMinute();
     }
 }

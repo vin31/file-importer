@@ -13,7 +13,7 @@ class UpdateFile extends Command
      *
      * @var string
      */
-    protected $signature = 'update.file';
+    protected $signature = 'updateFile';
 
     /**
      * The console command description.
@@ -39,8 +39,6 @@ class UpdateFile extends Command
      */
     public function handle()
     {
-    	$request = Request::create('/import', 'POST');
-    	
     	$controller = new UrlController(); // is there a better way of calling the controller? or call routes here?
     	$controller->refreshRecords();
     	

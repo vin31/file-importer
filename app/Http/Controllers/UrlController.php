@@ -9,6 +9,9 @@ use Carbon;
 
 class UrlController extends Controller
 {
+	
+	use FileComparator; // Is using Trait here good?
+	
 	public $i = 1;
 	
 	const ID_COL = "id";
@@ -27,34 +30,35 @@ class UrlController extends Controller
 	
 	public function refreshRecords()
 	{
+		
+		info("Refresing records..........");
+		
 		$urls = $this->getUrls();
 		
 		foreach ($urls as $url)
 		{
 			$import_url = $url->import_url;
 			
-			$blob = fopen($import_url,'rb');
+			$blob1 = fopen($import_url,'rb');
 			
 			if ($this->isUrlExists($import_url))
 			{
-				$this->getBlobOfFile($import_url);
+				
+				if ($this->isCsvFile($import_url))
+				{
+					if ($this->compareCsvFiles($blob1,  $this->getBlobOfFile($import_url)) === false)
+					{
+						$affected = DB::update('UPDATE file.file_importer SET '.SELF::IMG_DATA_COL.' = ? WHERE '. SELF::IMPORT_URL_COL .' = ?', [$blob1, $import_url]);
+						info('? File/s updated', [$affected]);
+					}
+				}
+				
 			} else 
 			{
-				$file = new File();
-				$file->setFileName('sample.csv');
-				$file->setDateAdded(Carbon\Carbon::now());
-				$file->setDateUpdated(Carbon\Carbon::now());
-				$file->setImageData($blob);
-				$file->setImportUrl($import_url);
-				$file->setActive('Y');
-				
-				$this->insertFile($file);
+				$this->insertFile($blob1, $import_url);
 			}
-			fclose($blob);
+			fclose($blob1);
 		}
-		
-// 		file_put_contents("sample.csv", fopen($url, 'rb'));
-			 
 	}
 	
     public function getUrls(){
@@ -75,7 +79,16 @@ class UrlController extends Controller
     	return count($blobs) > 0 ? $blobs[0]->img_data : null;
     }
     
-    public function insertFile($file){
+    public function insertFile($blob, $import_url){
+    	
+    	$file = new File();
+    	$file->setFileName('sample.csv');
+    	$file->setDateAdded(Carbon\Carbon::now());
+    	$file->setDateUpdated(Carbon\Carbon::now());
+    	$file->setImageData($blob);
+    	$file->setImportUrl($import_url);
+    	$file->setActive('Y');
+    	
     	DB::insert('INSERT into file.file_importer ('.SELF::ID_COL.', '.SELF::FILE_NAME_COL.','.SELF::DATE_ADDED_COL.','.SELF::DATE_UPDATED_COL.','.SELF::IMG_DATA_COL.','.SELF::IMPORT_URL_COL.','.SELF::ACTIVE_COL.') VALUES (?, ?, ?, ?, ?, ?, ?)',[$this->i++, $file->getFileName(),$file->getDateAdded(),$file->getDateUpdated(),$file->getImageData(),$file->getImportUrl(),$file->getActive()]);
     }
 }
