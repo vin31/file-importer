@@ -6,7 +6,7 @@ CREATE TABLE `file_importer` (
   `date_added` datetime DEFAULT NULL,
   `date_updated` datetime DEFAULT NULL,
   `active` varchar(2) DEFAULT NULL,
-  `img_data` blob,
+  `img_data` longblob,
   `import_url` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This contains details of files imported.';

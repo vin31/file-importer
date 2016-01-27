@@ -16,9 +16,9 @@ Route::get('/', function () {
 //     phpinfo();
 });
 
-Route::get('/summary', 'UrlController@refreshRecords');
+Route::get('/refresh', 'UrlController@refreshRecords');
 
-// Route::get('/summary', 'ImportController@summary');
+Route::get('/summary', 'ImportController@summary');
 
 Route::get('/main', 'UrlController@getUrls');
 

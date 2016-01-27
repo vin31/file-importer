@@ -39,7 +39,7 @@ class UrlController extends Controller
 		{
 			$import_url = $url->import_url;
 			
-			$blob1 = fopen($import_url,'rb');
+			$blob1 = file_get_contents($import_url);
 			
 			if ($this->isUrlExists($import_url))
 			{
@@ -48,7 +48,7 @@ class UrlController extends Controller
 				{
 					if ($this->compareCsvFiles($blob1,  $this->getBlobOfFile($import_url)) === false)
 					{
-						$affected = DB::update('UPDATE file.file_importer SET '.SELF::IMG_DATA_COL.' = ? WHERE '. SELF::IMPORT_URL_COL .' = ?', [$blob1, $import_url]);
+						$affected = DB::update('UPDATE file.file_importer SET '.SELF::IMG_DATA_COL.' = ?, '.SELF::DATE_UPDATED_COL. ' = ? WHERE '. SELF::IMPORT_URL_COL .' = ?', [$blob1, Carbon\Carbon::now(), $import_url]);
 						info('? File/s updated', [$affected]);
 					}
 				}
@@ -57,7 +57,7 @@ class UrlController extends Controller
 			{
 				$this->insertFile($blob1, $import_url);
 			}
-			fclose($blob1);
+// 			fclose($blob1);
 		}
 	}
 	
@@ -72,7 +72,7 @@ class UrlController extends Controller
     	return count($urls) > 0;
     }
     
-    public function getBlobOfFile($url='http://samplecsvs.s3.amazonaws.com/SalesJan2009.csv'){
+    public function getBlobOfFile($url){
     	
     	$blobs = DB::select('SELECT ' .SELF::IMG_DATA_COL. ' FROM file.file_importer WHERE '.SELF::IMPORT_URL_COL.' = \'' .$url.'\'');
     	
@@ -82,7 +82,7 @@ class UrlController extends Controller
     public function insertFile($blob, $import_url){
     	
     	$file = new File();
-    	$file->setFileName('sample.csv');
+    	$file->setFileName($this->getFileName($import_url));
     	$file->setDateAdded(Carbon\Carbon::now());
     	$file->setDateUpdated(Carbon\Carbon::now());
     	$file->setImageData($blob);

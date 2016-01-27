@@ -40,7 +40,7 @@ class UpdateFile extends Command
     public function handle()
     {
     	$controller = new UrlController(); // is there a better way of calling the controller? or call routes here?
-    	$controller->refreshRecords();
+//     	$controller->refreshRecords();
     	
     }
 }

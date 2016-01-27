@@ -65,4 +65,9 @@ trait FileComparator
 	{
 		return strcasecmp(pathinfo($url, PATHINFO_EXTENSION), 'csv') === 0;
 	}
+	
+	public function getFileName($url)
+	{
+		return pathinfo($url, PATHINFO_FILENAME).'.'.pathinfo($url, PATHINFO_EXTENSION);
+	}
 }
