@@ -13,7 +13,7 @@ class UpdateFile extends Command
      *
      * @var string
      */
-    protected $signature = 'updateFile';
+    protected $signature = 'update.file';
 
     /**
      * The console command description.
