@@ -16,6 +16,7 @@ class CreateFilesTable extends Migration
             $table->increments('id');
             $table->string('file_name');
             $table->string('import_url');
+            $table->binary('img_data');
             $table->timestamps();
         });
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use DB;
 use App\File;
 use Carbon;
+use App\Url;
 
 class UrlController extends Controller
 {
@@ -37,7 +38,7 @@ class UrlController extends Controller
 		
 		foreach ($urls as $url)
 		{
-			$import_url = $url->import_url;
+			$import_url = $url->url;
 			
 			$blob1 = file_get_contents($import_url);
 			
@@ -47,7 +48,7 @@ class UrlController extends Controller
 				{
 					if ($this->compareCsvFiles($blob1,  $this->getBlobOfFile($import_url)) === false)
 					{
-						$affected = DB::update('UPDATE file.file_importer SET '.SELF::IMG_DATA_COL.' = ?, '.SELF::DATE_UPDATED_COL. ' = ? WHERE '. SELF::IMPORT_URL_COL .' = ?', [$blob1, Carbon\Carbon::now(), $import_url]);
+						$affected = DB::update('UPDATE  SET '.SELF::IMG_DATA_COL.' = ?, '.SELF::DATE_UPDATED_COL. ' = ? WHERE '. SELF::IMPORT_URL_COL .' = ?', [$blob1, Carbon\Carbon::now(), $import_url]);
 						info('? File/s updated', [$affected]);
 					} 
 				}
@@ -55,7 +56,7 @@ class UrlController extends Controller
 				{
 					if ($this->comparePdfFiles($blob1,  $this->getBlobOfFile($import_url)) === false)
 					{
-						$affected = DB::update('UPDATE file.file_importer SET '.SELF::IMG_DATA_COL.' = ?, '.SELF::DATE_UPDATED_COL. ' = ? WHERE '. SELF::IMPORT_URL_COL .' = ?', [$blob1, Carbon\Carbon::now(), $import_url]);
+						$affected = DB::update('UPDATE  SET '.SELF::IMG_DATA_COL.' = ?, '.SELF::DATE_UPDATED_COL. ' = ? WHERE '. SELF::IMPORT_URL_COL .' = ?', [$blob1, Carbon\Carbon::now(), $import_url]);
 						info('? File/s updated', [$affected]);
 					}
 				}
@@ -67,33 +68,39 @@ class UrlController extends Controller
 	}
 	
     public function getUrls(){
-    	$urls = DB::select('SELECT '.SELF::IMPORT_URL_COL.' FROM file.import');
-	    //return array of urls ($urls). for now, echo out import urls just to check.
-		return $urls;
+    	$urls = Url::all();
+	    echo count($urls);
+    	return $urls;
     }
     
     public function isUrlExists($url){
-    	$urls = DB::select('SELECT '.SELF::IMPORT_URL_COL.' FROM file.file_importer WHERE '.SELF::IMPORT_URL_COL.' = ?', [$url]);
+    	$urls = DB::select('SELECT '.SELF::IMPORT_URL_COL.' FROM homestead.files WHERE '.SELF::IMPORT_URL_COL.' = ?', [$url]);
     	return count($urls) > 0;
     }
     
     public function getBlobOfFile($url){
     	
-    	$blobs = DB::select('SELECT ' .SELF::IMG_DATA_COL. ' FROM file.file_importer WHERE '.SELF::IMPORT_URL_COL.' = \'' .$url.'\'');
+    	$blobs = DB::select('SELECT ' .SELF::IMG_DATA_COL. ' FROM homestead.files WHERE '.SELF::IMPORT_URL_COL.' = \'' .$url.'\'');
     	
     	return count($blobs) > 0 ? $blobs[0]->img_data : null;
     }
     
     public function insertFile($blob, $import_url){
     	
-    	$file = new File();
-    	$file->setFileName($this->getFileName($import_url));
-    	$file->setDateAdded(Carbon\Carbon::now());
-    	$file->setDateUpdated(Carbon\Carbon::now());
-    	$file->setImageData($blob);
-    	$file->setImportUrl($import_url);
-    	$file->setActive('Y');
+    	$file = new File;
     	
-    	DB::insert('INSERT into file.file_importer ('.SELF::ID_COL.', '.SELF::FILE_NAME_COL.','.SELF::DATE_ADDED_COL.','.SELF::DATE_UPDATED_COL.','.SELF::IMG_DATA_COL.','.SELF::IMPORT_URL_COL.','.SELF::ACTIVE_COL.') VALUES (?, ?, ?, ?, ?, ?, ?)',[$this->i++, $file->getFileName(),$file->getDateAdded(),$file->getDateUpdated(),$file->getImageData(),$file->getImportUrl(),$file->getActive()]);
+    	$file->file_name = $this->getFileName($import_url);
+    	$file->import_url = $import_url;
+    	$file->img_data = $blob;
+    	$file->save();
+    	
+//     	$file->setFileName($this->getFileName($import_url));
+//     	$file->setDateAdded(Carbon\Carbon::now());
+//     	$file->setDateUpdated(Carbon\Carbon::now());
+//     	$file->setImageData($blob);
+//     	$file->setImportUrl($import_url);
+//     	$file->setActive('Y');
+    	
+//     	DB::insert('INSERT into  ('.SELF::ID_COL.', '.SELF::FILE_NAME_COL.','.SELF::DATE_ADDED_COL.','.SELF::DATE_UPDATED_COL.','.SELF::IMG_DATA_COL.','.SELF::IMPORT_URL_COL.','.SELF::ACTIVE_COL.') VALUES (?, ?, ?, ?, ?, ?, ?)',[$this->i++, $file->getFileName(),$file->getDateAdded(),$file->getDateUpdated(),$file->getImageData(),$file->getImportUrl(),$file->getActive()]);
     }
 }
