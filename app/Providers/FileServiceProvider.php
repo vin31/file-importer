@@ -8,8 +8,6 @@ use App\Services\Contracts\FileService;
 
 class FileServiceProvider extends ServiceProvider
 {
-    protected $defer = true;
-	
     /**
      * Bootstrap the application services.
      *
@@ -27,27 +25,6 @@ class FileServiceProvider extends ServiceProvider
      */
     public function register()
     {
-//         $this->app->singleton('App\Services\Contracts\FileService', function () {
-//             return new FileServiceImpl();
-//         });
-
-//     	$this->app->bind('App\Services\Contracts\FileService', function(){
-    	
-//     		return new FileServiceImpl();
-    	
-//     	});
-
     	$this->app->bind('App\Services\Contracts\FileService', 'App\Services\Impl\FileServiceImpl');
     }
-    
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-    	return ['App\Services\Contracts\FileService'];
     }
-    
-}
