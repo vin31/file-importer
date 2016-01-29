@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
-use DB;
+use App\File;
 
 class ImportController extends Controller
 {
@@ -14,18 +13,8 @@ class ImportController extends Controller
      */
     public function summary()
     {
-    	$mytime = Carbon::now();
+    	$files = File::all();
     	
-    	//retrieve data from file.file_importer table
-    	$records = DB::select('SELECT * FROM file.file_importer');
-    	
-    	//commenting these - clean this up later
-    	/*
-    	$records = [
-    			['url' => 'www.google.com', 'date' => $mytime->toDateTimeString()],
-    			['url' => 'www.yahoo.com', 'date' => $mytime->toDateTimeString()]
-    	];*/
-    	 
-    	return view('summary')->with('records', $records);
+    	return view('summary', ['files' => $files]);
     }
 }

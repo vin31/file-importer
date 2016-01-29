@@ -14,12 +14,12 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach($records as $key=>$record)
+			@foreach($files as $key=>$file)
 			<tr>
-				<td>{{$record->file_name}}</td>
-				<td>{{$record->import_url}}</td>
-				<td>{{$record->date_added}}</td>
-				<td>{{$record->date_updated}}</td>
+				<td>{{$file->file_name}}</td>
+				<td>{{$file->import_url}}</td>
+				<td>{{$file->created_at}}</td>
+				<td>{{$file->updated_at}}</td>
 				<td><a href="#">View</a></td>
 			</tr>
 			@endforeach

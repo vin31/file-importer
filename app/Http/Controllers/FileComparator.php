@@ -64,6 +64,23 @@ trait FileComparator
 		}
 	}
 	
+	public function compareTxtFiles($blob1, $blob2) {
+			
+		info('Comparing TXT files.....');
+	
+		file_put_contents('file1.txt', $blob1);
+		file_put_contents('file2.txt', $blob2);
+	
+		$file = file_get_contents("file1.txt");
+		$file2 = file_get_contents("file2.txt");
+	
+		if ($file === $file2) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public function isCsvFile($url) 
 	{
 		return strcasecmp(pathinfo($url, PATHINFO_EXTENSION), 'csv') === 0;
