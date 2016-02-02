@@ -62,6 +62,8 @@ class FileServiceImpl implements FileService
 		$file->import_url = $import_url;
 		$file->img_data = $blob;
 		$file->save();
+		
+		info('Saving ?', [$file->file_name]);
 	}
 	
 	private function updateBlob($blob, $import_url){

@@ -2,8 +2,6 @@
 
 namespace App\Services\Impl;
 
-use SplFileObject;
-
 trait FileComparator
 {
 	
