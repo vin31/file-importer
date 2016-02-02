@@ -8,8 +8,7 @@ use App\File;
 
 class FileServiceImpl implements FileService
 {
-
-	use FileComparator; // Is using Trait here good?
+	use FileComparator;
 	
 	public function refreshRecords()
 	{
@@ -18,30 +17,26 @@ class FileServiceImpl implements FileService
 		foreach ($urls as $url)
 		{
 			$import_url = $url->url;
-			$blob = file_get_contents($import_url);
+			$blob = file_get_contents($import_url); 
 			
 			if ($this->isUrlExists($import_url))
 			{
-				if ($this->isCsvFile($import_url))
+				if ($this->isFileSupported($import_url))
 				{
-					if ($this->compareCsvFiles($blob,  $this->getBlobOfFile($import_url)) === false)
+					if ($this->compareFiles($blob, $this->getBlobOfFile($import_url)) === false)
 					{
 						$this->updateBlob($blob, $import_url);
 					} 
 				}
-				else if ($this->isPdfFile($import_url)) 
+				else 
 				{
-					if ($this->comparePdfFiles($blob,  $this->getBlobOfFile($import_url)) === false)
-					{
-						$this->updateBlob($blob, $import_url);
-					}
+					error_log('? url is not supported', [$import_url]);
 				}
 			} else 
 			{
 				$this->insertFile($blob, $import_url);
 			}
 		}
-
 	}
 
 	private function getUrls(){

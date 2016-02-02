@@ -11,14 +11,13 @@
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function () {	
     return view('welcome');
-//     phpinfo();
 });
 
-Route::get('/refresh', 'UrlController@refreshRecords');
+Route::get('/refresh', 'ImportController@refreshRecords');
 
-Route::get('/summary', 'ImportController@summary');
+Route::get('/summary', 'ImportController@getSummary');
 
 Route::get('/main', 'UrlController@getUrls');
 

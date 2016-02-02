@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\ImportController;
 use Illuminate\Console\Command;
-use App\Http\Controllers\UrlController;
 
 class UpdateFile extends Command
 {
@@ -39,8 +38,7 @@ class UpdateFile extends Command
      */
     public function handle()
     {
-    	$controller = new UrlController(); // is there a better way of calling the controller? or call routes here?
-//     	$controller->refreshRecords();
-    	
+    	$controller = new ImportController(); 
+    	$controller->refreshRecords();
     }
 }
