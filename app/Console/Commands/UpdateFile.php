@@ -2,9 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Controllers\ImportController;
+use App\Services\Contracts\FileService;
 use Illuminate\Console\Command;
 
+/**
+ * Command class that handles the refreshing of records in Files table.
+ *
+ */
 class UpdateFile extends Command
 {
     /**
@@ -36,9 +40,8 @@ class UpdateFile extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(FileService $fileService)
     {
-    	$controller = new ImportController(); 
-    	$controller->refreshRecords();
+    	$fileService->refreshRecords();
     }
 }
