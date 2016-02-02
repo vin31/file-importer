@@ -19,22 +19,21 @@ class FileServiceImpl implements FileService
 			$import_url = $url->url;
 			$blob = file_get_contents($import_url); 
 			
-			if ($this->isUrlExists($import_url))
+			if ($this->isFileSupported($import_url))
 			{
-				if ($this->isFileSupported($import_url))
+				if ($this->isUrlExists($import_url))
 				{
 					if ($this->compareFiles($blob, $this->getBlobOfFile($import_url)) === false)
 					{
 						$this->updateBlob($blob, $import_url);
-					} 
-				}
-				else 
+					}
+				} else
 				{
-					error_log('? url is not supported', [$import_url]);
+					$this->insertFile($blob, $import_url);
 				}
-			} else 
+			} else
 			{
-				$this->insertFile($blob, $import_url);
+				error_log('? url is not supported', [$import_url]);
 			}
 		}
 	}
