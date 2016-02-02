@@ -111,6 +111,8 @@ class FileServiceImpl implements FileService
 		
 		info('Saving '.$file->file_name.'...');
 		$file->save();
+		
+		info('Saving ?', [$file->file_name]);
 	}
 	
 	/**
