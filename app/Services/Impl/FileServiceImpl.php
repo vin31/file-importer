@@ -33,30 +33,38 @@ class FileServiceImpl implements FileService
 		{
 			$import_url = $url->url;
 			
-			// checks if file type is supported
-			if ($this->isFileSupported($import_url))
+			try 
 			{
-
-				// get the blob value of import file
-				$blob = file_get_contents($import_url);
-					
-				// checks if url already exists in Files table
-				if ($this->isUrlExists($import_url))
+				// checks if file type is supported
+				if ($this->isFileSupported($import_url))
 				{
-					// compares the import file and the one saved in Files table
-					if ($this->compareFiles($blob, $this->getBlobOfFile($import_url)) === false)
+					// get the blob value of import file
+					$blob = file_get_contents($import_url);
+					
+					// checks if url already exists in Files table
+					if ($this->isUrlExists($import_url))
 					{
-						// updates the blob column in Files table if imported file is different
-						$this->updateBlob($blob, $import_url);
+						// compares the import file and the one saved in Files table
+						if ($this->compareFiles($blob, $this->getBlobOfFile($import_url)) === false)
+						{
+							// updates the blob column in Files table if imported file is different
+							$this->updateBlob($blob, $import_url);
+						}
+					} else
+					{
+						// inserts a record in Files table if import url is not found
+						$this->insertFile($blob, $import_url);
 					}
 				} else
 				{
-					// inserts a record in Files table if import url is not found
-					$this->insertFile($blob, $import_url);
+					info($import_url.' url is not supported');
 				}
-			} else
+			}
+			catch (\ErrorException $e)
 			{
-				info($import_url.' url is not supported');
+				error_log($e->getMessage());
+				info($import_url. " Error occured while downloading file. Continuing to next url...");
+				continue;
 			}
 		}
 	}
@@ -105,14 +113,12 @@ class FileServiceImpl implements FileService
 	 */
 	private function insertFile($blob, $url){
 		$file = new File;
-		$file->file_name = $this->getFileName($import_url);
-		$file->import_url = $import_url;
+		$file->file_name = $this->getFileName($url);
+		$file->import_url = $url;
 		$file->img_data = $blob;
 		
 		info('Saving '.$file->file_name.'...');
 		$file->save();
-		
-		info('Saving ?', [$file->file_name]);
 	}
 	
 	/**

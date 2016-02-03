@@ -25,11 +25,18 @@ trait FileComparator
 	 * @param string $url The import url
 	 * @return boolean
 	 */
-	public function isFileSupported($url)
+	public function isFileSupported($url) 
 	{
 		$filetypeArr = ['application/pdf','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','text/plain','text/csv'];
-		
-		$arrHeaders = get_headers($url, 1);
+	
+		try
+		{
+			$arrHeaders = get_headers($url, 1);
+		}
+		catch (\ErrorException $e)
+		{
+			throw new \ErrorException($e);
+		}
 		
 		return in_array($arrHeaders['Content-Type'], $filetypeArr);
 	}
