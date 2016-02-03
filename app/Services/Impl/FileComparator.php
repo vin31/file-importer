@@ -27,7 +27,11 @@ trait FileComparator
 	 */
 	public function isFileSupported($url)
 	{
-		return $this->isCsvFile($url) || $this->isPdfFile($url) || $this->isTxtFile($url);
+		$filetypeArr = ['application/pdf','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','text/plain','text/csv'];
+		
+		$arrHeaders = get_headers($url, 1);
+		
+		return in_array($arrHeaders['Content-Type'], $filetypeArr);
 	}
 	
 	/**
@@ -40,38 +44,5 @@ trait FileComparator
 	public function compareFiles($blob1, $blob2) 
 	{
 		return $blob1 === $blob2;
-	}
-	
-	/**
-	 * Checks if the import url is CSV type.
-	 * 
-	 * @param string $url The import url
-	 * @return boolean
-	 */
-	private function isCsvFile($url) 
-	{
-		return strcasecmp(pathinfo($url, PATHINFO_EXTENSION), 'csv') === 0;
-	}
-	
-	/**
-	 * Checks if the import url is PDF type.
-	 *
-	 * @param string $url The import url
-	 * @return boolean
-	 */
-	private function isPdfFile($url)
-	{
-		return strcasecmp(pathinfo($url, PATHINFO_EXTENSION), 'pdf') === 0;
-	}
-	
-	/**
-	 * Checks if the import url is TXT type.
-	 *
-	 * @param string $url The import url
-	 * @return boolean
-	 */
-	private function isTxtFile($url)
-	{
-		return strcasecmp(pathinfo($url, PATHINFO_EXTENSION), 'txt') === 0;
 	}
 }
