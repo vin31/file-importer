@@ -15,11 +15,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/download/{id}', 'ImportController@download');
+
 Route::get('/refresh', 'ImportController@refreshRecords');
 
 Route::get('/summary', 'ImportController@getSummary');
-
-Route::get('/main', 'UrlController@getUrls');
 
 Route::get('/blob', 'ImportController@blobbify');
 
