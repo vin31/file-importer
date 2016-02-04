@@ -2,6 +2,10 @@
 use App\Http\Controllers\ImportController;
 use Illuminate\View\View;
 
+/**
+ * Unit test for the ImportController class
+ *
+ */
 class ImportControllerTest extends TestCase
 {
 	/**
