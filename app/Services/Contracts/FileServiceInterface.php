@@ -6,7 +6,7 @@ namespace App\Services\Contracts;
  * Interface for file related services 
  *
  */
-interface FileService
+interface FileServiceInterface
 {
 
 	/**

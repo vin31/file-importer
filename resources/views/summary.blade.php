@@ -20,7 +20,7 @@
 				<td>{{$file->import_url}}</td>
 				<td>{{$file->created_at}}</td>
 				<td>{{$file->updated_at}}</td>
-				<td><a href="#">View</a></td>
+				<td><a href="download/{{$file->id}}">Download File</a></td>
 			</tr>
 			@endforeach
 		</tbody>
