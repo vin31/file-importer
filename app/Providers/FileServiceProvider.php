@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Services\Impl\FileServiceImpl;
-use App\Services\Contracts\FileService;
 
 class FileServiceProvider extends ServiceProvider
 {
@@ -25,6 +23,6 @@ class FileServiceProvider extends ServiceProvider
      */
     public function register()
     {
-    	$this->app->bind('App\Services\Contracts\FileService', 'App\Services\Impl\FileServiceImpl');
+    	$this->app->bind('App\Services\Contracts\FileServiceInterface', 'App\Services\FileService');
     }
-    }
+}

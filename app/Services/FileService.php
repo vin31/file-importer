@@ -1,23 +1,17 @@
 <?php
-namespace App\Services\Impl;
+namespace App\Services;
 
-use App\Services\Contracts\FileService;
-use App\Services\Impl\FileComparator;
-use App\Url;
 use App\File;
+use App\Services\Contracts\FileServiceInterface;
+use App\Url;
 
 /**
  * Service class that manages the files wherein it updates the database whenever there are 
  * changes from the import file.
  *
  */
-class FileServiceImpl implements FileService
+class FileService implements FileServiceInterface
 {
-	/*
-	 * Uses a trait that handles the file comaparison logic
-	 */
-	use FileComparator;
-	
 	/**
 	 * Refreshes the records whenever there are changes found in the import file.
 	 * 
@@ -35,6 +29,13 @@ class FileServiceImpl implements FileService
 			
 			try 
 			{
+				
+				if(!$this->isFileSupported($import_url))
+				{
+					info('File type is not supported.');
+					return;
+				}
+				
 				// checks if file type is supported
 				if ($this->isFileSupported($import_url))
 				{
@@ -45,7 +46,7 @@ class FileServiceImpl implements FileService
 					if ($this->isUrlExists($import_url))
 					{
 						// compares the import file and the one saved in Files table
-						if ($this->compareFiles($blob, $this->getBlobOfFile($import_url)) === false)
+						if ($blob !== $this->getBlobOfFile($import_url))
 						{
 							// updates the blob column in Files table if imported file is different
 							$this->updateBlob($blob, $import_url);
@@ -55,9 +56,6 @@ class FileServiceImpl implements FileService
 						// inserts a record in Files table if import url is not found
 						$this->insertFile($blob, $import_url);
 					}
-				} else
-				{
-					info($import_url.' url is not supported');
 				}
 			}
 			catch (\ErrorException $e)
@@ -133,5 +131,38 @@ class FileServiceImpl implements FileService
 		->update(['img_data' => $blob]);
 		
 		info($affected.' file/s updated');
+	}
+	
+	/**
+	 * Returns the filename of the url.
+	 *
+	 * @param string $url The import url
+	 * @return string
+	 */
+	private function getFileName($url)
+	{
+		return pathinfo($url, PATHINFO_FILENAME).'.'.pathinfo($url, PATHINFO_EXTENSION);
+	}
+	
+	/**
+	 * Checks if the import file is currently supported.
+	 *
+	 * @param string $url The import url
+	 * @return boolean
+	 */
+	private function isFileSupported($url)
+	{
+		$filetypeArr = ['application/pdf','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','text/plain','text/csv'];
+	
+		try
+		{
+			$arrHeaders = get_headers($url, 1);
+		}
+		catch (\ErrorException $e)
+		{
+			throw new \ErrorException($e);
+		}
+	
+		return in_array($arrHeaders['Content-Type'], $filetypeArr);
 	}
 }

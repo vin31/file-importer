@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\File;
-use App\Services\Contracts\FileService;
+use App\Http\Controllers\Controller;
+use App\Services\Contracts\FileServiceInterface;
 use Illuminate\Support\Facades\Response;
 
 /**
@@ -28,15 +28,15 @@ class ImportController extends Controller
     /**
      * Refreshes the Files table
      * 
-     * @param FileService $service The file service
+     * @param FileServiceInterface $service The file service
      * @return void
      */
-    public function refreshRecords(FileService $service)
+    public function refreshRecords(FileServiceInterface $service)
     {
     	info("Refreshing records..........");
-    
+    	
     	$service->refreshRecords();
-    
+
     	info("Refreshing records completed.");
     }
     
